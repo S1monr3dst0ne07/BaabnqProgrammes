@@ -1,0 +1,106 @@
+put _math::returnAddr = 0;
+
+
+jump math::loop;
+
+
+lab math::add;
+put _math::arg1 = 0;
+put _math::arg2 = 0;
+put _math::output = 0;
+
+pull _math::returnAddr;
+pull _math::arg2;
+pull _math::arg1;
+
+put _math::output = _math::arg1 + _math::arg2;
+
+push _math::output;
+push _math::returnAddr;
+return;
+
+
+
+
+lab math::sub;
+put _math::arg1 = 0;
+put _math::arg2 = 0;
+put _math::output = 0;
+
+pull _math::returnAddr;
+pull _math::arg2;
+pull _math::arg1;
+
+put _math::output = _math::arg1 - _math::arg2;
+
+push _math::output;
+push _math::returnAddr;
+return;
+
+
+
+
+lab math::mul;
+put _math::arg1 = 0;
+put _math::arg2 = 0;
+put _math::output = 0;
+
+pull _math::returnAddr;
+pull _math::arg1;
+pull _math::arg2;
+
+jump math::mulExit ~ _math::arg1 == 0;
+jump math::mulExit ~ _math::arg2 == 0;
+lab math::mulLoop;
+
+put _math::baseBit = _math::arg1 & 1;
+jump math::mulSkipAdd ~ _math::baseBit == 0;
+put _math::output = _math::output + _math::arg2;
+lab math::mulSkipAdd;
+
+put _math::arg2 = _math::arg2 << 1;
+put _math::arg1 = _math::arg1 >> 1;
+
+jump math::mulLoop ~ _math::arg1 != 0;
+lab math::mulExit;
+
+push _math::output;
+push _math::returnAddr;
+return;
+
+
+
+lab math::div;
+"i know, this is not a very efficient division alogrithem, but i don't care
+"call this subroutine like this;
+"push dividend
+"push divisor
+"sub math:div
+"pull output
+"pull remainder
+
+put _math::divisor = 0;
+put _math::dividend = 0;
+put _math::output = 0;
+
+pull _math::returnAddr;
+pull _math::divisor;
+pull _math::dividend;
+
+jump math::divExit ~ _math::divisor > _math::dividend;
+lab math::divLoop;
+
+put _math::output = _math::output + 1;
+put _math::dividend = _math::dividend - _math::divisor;
+
+jump math::divLoop ~ _math::dividend > _math::divisor;
+jump math::divLoop ~ _math::dividend == _math::divisor;
+lab math::divExit;
+
+push _math::dividend;
+push _math::output;
+push _math::returnAddr;
+return;
+
+
+lab math::loop;
