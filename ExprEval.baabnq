@@ -3,11 +3,9 @@
 "so all positive ints and 3 opperators +-*
 "also there is a int limit of, well 16, because i dont want to represent an int in the expr with more that one byte
 
-new '2 + 10 * 2 - 1' _ExprStringPtr;
-
 
 "we need basic math stuff
-"use libs/math.baabnq
+use 'libs/math.baabnq';
 
 
 
@@ -18,6 +16,8 @@ put _PrintString::ArgPtr = 0;
 put _PrintStringNoSpace::ArgPtr = 0;
 put _Eval::IterPtr       = 0;
 put _EvalOpp::Result     = 0;
+
+put _ExprStringPtr = 0;
 
 jump skip;
 
@@ -32,10 +32,10 @@ push _ReturnAddr;
 lab PrintString::Loop;
 put _Temp <- _PrintString::ArgPtr;
 put _PrintString::ArgPtr = _PrintString::ArgPtr + 1;
-putstr _Temp; 
+putchr _Temp; 
 
 jump PrintString::Loop ~ _Temp != 0;
-putstr 10;
+putchr 10;
 return;
 
 
@@ -45,16 +45,19 @@ pull _ReturnAddr;
 pull _PrintStringNoSpace::ArgPtr;
 push _ReturnAddr;
 
+
+
 lab PrintStringNoSpace::Loop;
 put _Temp <- _PrintStringNoSpace::ArgPtr;
 put _PrintStringNoSpace::ArgPtr = _PrintStringNoSpace::ArgPtr + 1;
 
 jump PrintStringNoSpace::SkipPrint ~ _Temp == 32;
-putstr _Temp; 
+putchr _Temp; 
 lab PrintStringNoSpace::SkipPrint;
 
 jump PrintStringNoSpace::Loop ~ _Temp != 0;
-putstr 10;
+putchr 10;
+
 return;
 
 
@@ -64,7 +67,7 @@ lab FindBounds;
 put _FindBounds::MinPtr   = _Eval::IterPtr - 1;
 put _FindBounds::LimitPtr = _Eval::IterPtr + 1;
 
-"find the minimum and limit of the given (by the _Eval::IterPtr) opperator and it's attributes
+"find the minimum and limit of the given (by the _Eval::IterPtr) opperator and its attributes
 "in the example the wall represents the minimum and limit
 "a + |b * c| - d
 
@@ -82,7 +85,7 @@ jump FindBounds::FindMinExit ~ _Temp < 48;
 jump FindBounds::FindMinExit ~ _Temp > 57;
 jump FindBounds::FindMinLoop;
 lab FindBounds::FindMinExit;
-"because we want the minimum and not the negativ limit we need to increment the ptr after we've hit a non-digit
+"because we want the minimum and not the negativ limit we need to increment the ptr after we have hit a non-digit
 put _FindBounds::MinPtr = _FindBounds::MinPtr + 1;
 
 
@@ -268,9 +271,9 @@ put _Temp <- _Eval::IterPtr;
 push _EvalOpp::Attr1Base;
 push _EvalOpp::Attr2Base;
 
-sub math::mul ~ _Temp == 42;
-sub math::add ~ _Temp == 43;
-sub math::sub ~ _Temp == 45;
+sub Math::Mul ~ _Temp == 42;
+sub Math::Add ~ _Temp == 43;
+sub Math::Sub ~ _Temp == 45;
 
 put _EvalOpp::Result = 0;
 pull _EvalOpp::Result;
@@ -320,15 +323,35 @@ return;
 
 lab skip;
 
+
+new '2 + 10 * 2 - 1' _ExprString1Ptr;
+new '18 + 51 - 2 - 83 + 17 * 100' _ExprString2Ptr;
+
+
+putchr 10;
+put _ExprStringPtr = _ExprString1Ptr;
 push _ExprStringPtr;
 sub PrintString;
 
 sub Eval;
 
-putstr 61;
-putstr 32;
-
+putchr 61;
+putchr 32;
 push _ExprStringPtr;
 sub PrintStringNoSpace;
+
+
+putchr 10;
+put _ExprStringPtr = _ExprString2Ptr;
+push _ExprStringPtr;
+sub PrintString;
+
+sub Eval;
+
+putchr 61;
+putchr 32;
+push _ExprStringPtr;
+sub PrintStringNoSpace;
+
 
 lab exit;

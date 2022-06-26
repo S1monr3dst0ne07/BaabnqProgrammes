@@ -1,0 +1,129 @@
+"define struct the holds list
+struct list 5;
+put _size = 5;
+
+"this is for getting args for stack and used as a placeholder
+put _ReturnAddr = 0;
+
+"here we have routine space:
+jump skip;
+
+"this subroutine will pull a size for the stack then init a list with that size of type "list" and will return a pointer to the base of that list on the stack
+lab init;
+"init as -1 because we increment the value first (in the loop of course)
+put _index = 0; 
+put _initSize = 0;
+put _data = 0;
+
+pull _ReturnAddr;
+pull _initSize;
+new list _initListPointer;
+
+lab initLoop;
+pull _data;
+put _data -> _initListPointer + _index;
+
+put _index = _index + 1;
+jump initLoop ~ _index != _initSize;
+
+"return the pointer:
+push _initListPointer;
+push _ReturnAddr;
+return;
+
+
+"this subroutine will print a given list and size (as arg on the stack just like in init)
+lab printList;
+put _index = 0;
+put _printListPointer = 0;
+put _printSize = 0;
+put _data = 0;
+
+pull _ReturnAddr;
+pull _printListPointer;
+pull _printSize;
+push _ReturnAddr;
+
+lab printLoop;
+put _data <- _printListPointer + _index;
+
+print _data;
+
+put _index = _index + 1;
+jump printLoop ~ _index != _printSize;
+return;
+
+
+lab sortList;
+put _sortListPointer = 0;
+put _sortListSize = 0;
+put _ReturnAddr = 0;
+put _DerefPointer1 = 0;
+put _DerefPointer2 = 0;
+
+pull _ReturnAddr;
+pull _sortListPointer;
+pull _sortListSize;
+push _ReturnAddr;
+
+put _sortListSize = _sortListPointer - 1;
+
+lab 0iter;
+put _SwapIndex = 0;
+put _Index = 0;
+
+lab listIter;
+
+put _DerefPointer1 <- _sortListPointer + _Index + 0;
+put _DerefPointer2 <- _sortListPointer + _Index + 1;
+
+sub swap ~ _DerefPointer1 > _DerefPointer2;
+
+put _Index = _Index + 1;
+jump listIter ~ _Index != _sortListSize;
+
+
+jump 0iter ~ _SwapIndex != 0;
+return;
+
+
+"this subroutine must be only called in context with sortList
+lab swap;
+"increment the swap index
+put _SwapIndex = _SwapIndex + 1;
+
+"now do the swaping itself
+put _DerefPointer1 -> _sortListPointer + _Index + 1;
+put _DerefPointer2 -> _sortListPointer + _Index + 0;
+return;
+
+lab skip;
+
+
+
+
+
+"make instance of list and init that list
+push 4;
+push 1;
+push 3;
+push 7;
+push 22;
+push _size;
+sub init;
+put _listPointer = 0;
+pull _listPointer;
+
+"sort list
+push _size;
+push _listPointer;
+sub sortList;
+
+
+"print result
+push _size;
+push _listPointer;
+sub printList;
+
+
+lab exit;

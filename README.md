@@ -1,2 +1,3 @@
 # BaabnqProgrammes
-Some Baabnq programmes i wrote
+Some of my baabnq programmes
+Caution: bad code

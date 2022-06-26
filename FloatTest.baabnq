@@ -1,0 +1,29 @@
+use 'libs/float.baabnq';
+
+
+push 2000;
+sub Floats::Value2Fp;
+sub Stack::Dup;
+
+pull _temp;
+push _temp | _SIGN_MASK;
+
+sub Floats::Mul;
+
+
+
+sub Stack::Dup;
+sub Stack::Dup;
+
+
+sub Floats::GetExponent;
+pull _temp;
+print _temp;
+
+
+sub Floats::GetMantissa;
+pull _temp;
+print _temp;
+
+pull _temp;
+print _temp >> 15;    
